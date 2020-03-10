@@ -32,13 +32,11 @@ Recommended params for the poisson process:
 
 To see a description of all possible params execute `python simulation.py -h`
 
-To see a summary of the events occured in every turn, execute the project with the `-s` flag. This summary includes groups of people by sex and range of ages, number of women pregnats and number of people alive.
+To see a summary of the events occured in every turn, execute the project with the `-s` flag. This summary includes groups of people by sex and range of ages, number of women pregnat and number of people alive.
 
 ## Autores ✒️
 
 - **Miguel Tenorio** - [stdevAntiD2ta](https://github.com/stdevAntiD2ta)
-
-También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto.
 
 ## Licencia 📄
 
