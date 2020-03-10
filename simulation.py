@@ -1,4 +1,4 @@
-import utils, time
+import utils, time, os
 from utils import LoggerFactory as Logger
 from math import inf
 
@@ -303,4 +303,10 @@ if __name__ == '__main__':
     else:
         log = Logger(name='Simulation')
     log.setLevel(args.level)
+
+    try:
+        with open('./logs/log.log', 'r'):
+            pass
+    except FileNotFoundError:
+        os.mkdir('./logs/')
     main(args)
