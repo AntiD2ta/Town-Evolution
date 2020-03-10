@@ -2,8 +2,6 @@ import utils, time
 from utils import LoggerFactory as Logger
 from math import inf
 
-log = None
-
 
 class Person:
 
@@ -270,12 +268,15 @@ class Scope:
 def main(args):
     kind = ''
     lamb = 0.0
-    if args.uniform != '':
+    if args.uniform:
         kind = args.uniform
         lamb = args.length
-    else:
-        kind = args.Poisson
+    elif args.poisson:
+        kind = args.poisson
         lamb = args.lamb
+    else:
+        print('The -u/--uniform or -P/--poisson parameter is required')
+        exit(0)
 
     s = Scope(args.males, args.females, args.period, kind, lamb)
     s.simulate(args.summary)
