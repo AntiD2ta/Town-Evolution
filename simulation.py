@@ -1,5 +1,6 @@
 import utils, time
 from utils import LoggerFactory as Logger
+from math import inf
 
 log = None
 
@@ -59,10 +60,11 @@ class Scope:
 
             #generate deaths events
             for k, p in self.people.items():
-                if p.inmunity <= 0:
+                if p.inmunity <= 0 and p.alive:
                     result, t = utils.generateDeath(p.sex, p.age, self.actual_time)
                     if result:
                         self.events.append((t, 'death', k))
+                        p.inmunity = inf
                     else:
                         p.inmunity = t * 2
 
@@ -210,7 +212,7 @@ class Scope:
                         self.events.append((turn, 'death', id))
                     if p.age >= 12 * 48 and oldAge < 12 * 48:
                         self.newSingles.append(id)
-                    if p.inmunity <= 0:
+                    if p.inmunity > 0:
                         p.inmunity -= turn - self.actual_time
             self.actual_time = turn
 
