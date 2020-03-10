@@ -298,15 +298,8 @@ if __name__ == '__main__':
     parser.add_argument('-F', '--file', type=bool, const=True, nargs='?', help='set if you want log to a file')
 
     args = parser.parse_args()
-    if args.file:
-        log = Logger(name='Simulation', log=True)
-    else:
-        log = Logger(name='Simulation')
-    log.setLevel(args.level)
-
-    try:
-        with open('./logs/log.log', 'r'):
-            pass
-    except FileNotFoundError:
+    if not os.path.exists('./logs'):
         os.mkdir('./logs/')
+    log = Logger(name='Simulation', log=args.file)
+    log.setLevel(args.level)
     main(args)
