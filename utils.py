@@ -1,8 +1,10 @@
-from random import random
+from random import random, randint, uniform
 from math import log, e
+
 
 def exponential(lamb, u):
     return -log(u) / lamb
+
 
 def poissonHomogeneous(lamb, t):         
     accum = 1                   
@@ -17,7 +19,17 @@ def poissonHomogeneous(lamb, t):
         if (-log(accum)/lamb) > t:
             return n, data
 
-def generateTimes(lamb, top):
+
+def generateTimesU(length):
+    times = [0]
+    while True:
+        u = randint(0, length)
+        times.append(times[-1] + u)
+        if times[-1] >= 4800:
+            return times
+        
+
+def generateTimesP(lamb, top):
     accum = 0
     last = 0
     times = [0]
