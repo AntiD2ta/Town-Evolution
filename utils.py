@@ -41,3 +41,10 @@ def generateTimesP(lamb, top):
                 return times
         accum += data[-1]
         last = accum
+
+
+def generateTimes(kind, *args):
+    if kind == "Poisson":
+        return generateTimesP(*args)
+    elif kind == "Uniform":
+        generateTimesU(*args)
