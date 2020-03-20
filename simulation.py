@@ -1,3 +1,18 @@
+import utils
+
+class Person:
+
+    def __init__(self, sex, age):
+        self.sex = sex
+        self.age = age
+        self.children_number = utils.generateChildrenNumber()
+
+        if sex == 'f':
+            self.pregnant = False
+
+    def age_in_years(self):
+        return self.sex // 48
+
 
 def main(args):
     pass
