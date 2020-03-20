@@ -36,27 +36,28 @@ class Scope:
         self.inmunities = set()
 
     def simulate(self):
-        #generate deaths events
-        for k, p in self.people.items():
-            if not p.inmunity:
-                result, t = utils.generateDeath(p.sex, p.age, self.actual_time)
-                if result:
-                    self.events.add((t, "death"))
-                else:
-                    p.inmunity = t
-                    self.inmunities.add(k)
+        while True:
+            #generate deaths events
+            for k, p in self.people.items():
+                if not p.inmunity:
+                    result, t = utils.generateDeath(p.sex, p.age, self.actual_time)
+                    if result:
+                        self.events.add((t, "death"))
+                    else:
+                        p.inmunity = t
+                        self.inmunities.add(k)
 
-        #generate breakups
+            #generate breakups
 
-        #check events
+            #check events
 
-        #generate couple wishes
+            #generate couple wishes
 
-        #set couples
+            #set couples
 
-        #generate pregnats
+            #generate pregnats
 
-        #update date
+            #update date
 
 def main(args):
     pass
