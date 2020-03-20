@@ -5,12 +5,12 @@ class Person:
     def __init__(self, sex, age):
         self.sex = sex
         self.age = age
-        self.children_number = utils.generateChildrenNumber()
+        self.childrenNumber = utils.generateChildrenNumber()
 
         if sex == 'f':
             self.pregnant = False
 
-    def age_in_years(self):
+    def ageInYears(self):
         return self.sex // 48
 
 

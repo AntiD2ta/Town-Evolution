@@ -38,7 +38,7 @@ pregnant = {
     (60, 125): 0.05
 }
 
-children_number = {
+childrenNumber = {
     1: 0.6,
     2: 0.75,
     3: 0.35,
@@ -47,7 +47,7 @@ children_number = {
     6: 0.05
 }
 
-wish_couple = {
+wishCouple = {
     (12, 15): 0.6,
     (15, 21): 0.65,
     (21, 35): 0.8,
@@ -56,7 +56,7 @@ wish_couple = {
     (60, 125): 0.2
 }
 
-make_couple = {
+makeCouple = {
     (0, 5): 0.45,
     (5, 10): 0.4,
     (10, 15): 0.35,
@@ -64,7 +64,7 @@ make_couple = {
     (20, 100): 0.15
 }
 
-children_born = {
+childrenBorn = {
     1: 0.7,
     2: 0.18,
     3: 0.06,
@@ -155,7 +155,7 @@ def generateTimes(kind, *args):
         generateTimesU(*args)
 
 def generateChildrenNumber():
-    cn = [(p, n) for n, p in children_number.items()]
+    cn = [(p, n) for n, p in childrenNumber.items()]
     cn.sort()
     u = random()
     for p in cn:
