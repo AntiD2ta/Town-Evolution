@@ -1,6 +1,10 @@
 from random import random, randint, uniform
 from math import log, e
+from colors import REDB, BLUEB, YELLOWB
+import logging
 
+datefmt ='%Y-%m-%d %H:%M:%S'
+format  = f'{BLUE}%(asctime)s{RESET} - %(color)s%(levelname)s{RESET} - {BLACKB}%(name)s{RESET} - {GREEN}%(method)s{RESET} - %(message)s'
 
 breakup = {
     (12, 15): 0.0815,
@@ -67,6 +71,40 @@ children_born = {
     4: 0.04,
     5: 0.02
 }
+
+
+def LoggerFactory(name="root"):
+    '''
+    Create a custom logger to use colors in the logs
+    '''
+    logging.setLoggerClass(Logger)
+    logging.basicConfig(format=format, datefmt=datefmt)
+    return logging.getLogger(name=name)
+
+
+class Logger(logging.getLoggerClass()):
+    
+    def __init__(self, name = "root", level = logging.NOTSET):
+        self.debug_color =  BLUEB
+        self.info_color = YELLOWB
+        self.error_color = REDB
+        return super().__init__(name, level)
+        
+    def debug(self, msg, mth=""):
+        super().debug(msg, extra={"color": self.debug_color, "type": mth})
+        
+    def info(self, msg, mth=""):
+        super().info(msg, extra={"color": self.info_color, "type": mth})
+        
+    def error(self, msg, mth=""):
+        super().error(msg, extra={"color": self.error_color, "type": mth})
+        
+    def change_color(self, method, color):
+        setattr(self, f"{method}_color", color)
+
+
+def Bernoulli(p):
+    return random() <= p
 
 
 def exponential(lamb, u):
