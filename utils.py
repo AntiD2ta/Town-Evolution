@@ -63,7 +63,7 @@ make_couple = {
 children_born = {
     1: 0.7,
     2: 0.18,
-    3: 0.08,
+    3: 0.06,
     4: 0.04,
     5: 0.02
 }
@@ -115,3 +115,15 @@ def generateTimes(kind, *args):
         return generateTimesP(*args)
     elif kind == "Uniform":
         generateTimesU(*args)
+
+def generateChildrenNumber():
+    cn = [(p, n) for n, p in children_number.items()]
+    cn.sort()
+    u = random()
+    for p in cn:
+        if u <= p[0]:
+            return p[1]
+    return cn[-1][1]
+
+def Bernoulli(p):
+    return random() <= p
