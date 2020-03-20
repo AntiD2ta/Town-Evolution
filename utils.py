@@ -163,5 +163,20 @@ def generateChildrenNumber():
             return p[1]
     return cn[-1][1]
 
-def Bernoulli(p):
-    return random() <= p
+
+def getAgeRange(age, d):
+    for l, h in d.keys():
+        if l <= age and age < h:
+            return (l, h)
+
+
+def generateDeath(sex, age, date):
+    deathP = {}
+    if sex == 'male':
+        deathP = deathM
+    else:
+        deathP = deathF
+
+    ageRange = getAgeRange(age, deathP)
+    t = randint(date, date + ageRange[1] * 48 - age)
+    return Bernoulli(deathP[ageRange]), t
