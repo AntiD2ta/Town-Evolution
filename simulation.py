@@ -68,6 +68,9 @@ if __name__ == "__main__":
     parser.add_argument('-m', '--males', type=int, default=800000, help='number of initial male people')
     parser.add_argument('-f', '--female', type=int, default=1000000, help='number of initial female people')
     parser.add_argument('-p', '--period', type=int, default=4800, help='number of weeks of the entire simulation period')
+    parser.add_argument('-u', '--uniform', type=str, const='Uniform', help='use an uniform random variable to generate time evolution')
+    parser.add_argument('-p', '--poisson', type=str, const='Poisson', help='use a poisson random variable to generate time evolution')
+    parser.add_argument('-l', '--lambda', type=float, help='lambda for poisson if poisson mode is specifided')
 
     args = parser.parse_args()
 
