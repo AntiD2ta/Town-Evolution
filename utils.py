@@ -180,3 +180,35 @@ def generateDeath(sex, age, date):
     ageRange = getAgeRange(age, deathP)
     t = randint(date, date + ageRange[1] * 48 - age)
     return Bernoulli(deathP[ageRange]), t
+
+
+def generateBreakup(age):
+    ageRange = getAgeRange(age, breakup)
+    return int(exponential(breakup[ageRange], random()))
+
+
+def generateWishCouple(age):
+    ageRange = getAgeRange(age, wishCouple)
+    return Bernoulli(wishCouple[ageRange])
+
+
+def marry(age1, age2):
+    dif = abs(age1 - age2) // 48
+    for t, p in makeCouple.items():
+        if dif < t[1]:
+            return Bernoulli(p)
+    
+
+def generatePregnancy():
+    cb = [(p, n) for n, p in childrenBorn.items()]
+    cb.sort()
+    u = random()
+    for p in cb:
+        if u <= p[0]:
+            return p[1]
+    return cb[-1][1]
+    
+
+def generateBirth(age):
+    ageRange = getAgeRange(age, pregnant)
+    return Bernoulli(pregnant[ageRange])
