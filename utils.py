@@ -1,4 +1,4 @@
-from random import random, randint, uniform
+from random import random, randint, uniform, shuffle 
 from math import log, e
 from colors import REDB, BLUEB, YELLOWB
 import logging
@@ -44,7 +44,7 @@ childrenNumber = {
     3: 0.35,
     4: 0.2,
     5: 0.1,
-    6: 0.05
+    99999: 0.05
 }
 
 wishCouple = {
