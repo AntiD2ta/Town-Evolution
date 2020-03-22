@@ -223,19 +223,32 @@ class Scope:
             #self.summary()
             log.info(f'Turn passed!, {self.actual_time // 48}, deaths: {self.deaths}, births: {self.births}')
 def main(args):
-    pass
+    kind = ''
+    lamb = 0.0
+    if args.uniform != '':
+        kind = args.uniform
+        lamb = args.length
+    else:
+        kind = args.Poisson
+        lamb = args.lamb
+
+    s = Scope(args.males, args.females, args.period, kind, lamb)
+    s.simulate()
+    s.summary()
 
 if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='People evolution simulator')
-    parser.add_argument('-m', '--males', type=int, default=800000, help='number of initial male people')
-    parser.add_argument('-f', '--female', type=int, default=1000000, help='number of initial female people')
+    parser.add_argument('-m', '--males', type=int, default=1000, help='number of initial male people')
+    parser.add_argument('-f', '--females', type=int, default=1000, help='number of initial female people')
     parser.add_argument('-p', '--period', type=int, default=4800, help='number of weeks of the entire simulation period')
-    parser.add_argument('-u', '--uniform', type=str, const='Uniform', help='use an uniform random variable to generate time evolution')
-    parser.add_argument('-p', '--poisson', type=str, const='Poisson', help='use a poisson random variable to generate time evolution')
-    parser.add_argument('-l', '--lambda', type=float, help='lambda for poisson if poisson mode is specifided')
+    parser.add_argument('-u', '--uniform', type=str, const='Uniform', nargs='?', help='use an uniform random variable to generate time evolution')
+    parser.add_argument('-l', '--length', type=int, default=48, help='limit of the uniform random variable in number of weeks')
+    parser.add_argument('-P', '--poisson', type=str, const='Poisson', nargs='?', help='use a poisson random variable to generate time evolution')
+    parser.add_argument('-L', '--lamb', type=float, default=0.0265,help='lambda for poisson if poisson mode is specified')
+    parser.add_argument('-v', '--level', type=str, default='INFO', help='log level')
 
     args = parser.parse_args()
-
+    log.setLevel('DEBUG')
     main(args)
