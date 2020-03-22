@@ -50,7 +50,7 @@ class Scope:
         self.totalDeaths = 0
         self.totalBirths = 0
 
-    def simulate(self):
+    def simulate(self, summaryFlag):
         while True:
             self.deaths = 0
             self.births = 0
@@ -220,8 +220,51 @@ class Scope:
             self.totalBirths += self.births
             self.totalDeaths += self.deaths
             
-            #self.summary()
-            log.info(f'Turn passed!, {self.actual_time // 48}, deaths: {self.deaths}, births: {self.births}')
+            if summaryFlag:
+                self.summary()
+            log.info(f'Turn passed, {self.actual_time // 48}, deaths: {self.deaths}, births: {self.births}', 'New Turn')
+
+    def summary(self):
+        alives = 0
+        for p in self.people.values():
+            if p.alive:
+                alives += 1
+
+        agesm = {
+            (0, 12): 0,
+            (12, 45): 0,
+            (45, 76): 0,
+            (76, 125): 0,
+            (125, 200): 0
+        }
+        agesf = {
+            (0, 12): 0,
+            (12, 45): 0,
+            (45, 76): 0,
+            (76, 125): 0,
+            (125, 200): 0
+        }
+        preg = 0
+        borns = 0
+        for p in self.people.values():
+            agesm[utils.getAgeRange(p.age, utils.deathM)] += p.sex == 'm' and p.alive
+            agesf[utils.getAgeRange(p.age, utils.deathM)] += p.sex == 'f' and p.alive
+            if p.sex == 'f' and p.pregnant and p.alive:
+                preg += 1
+        for e in self.events:
+            borns += e[1] == "birth"
+        log.info(f'Summary of population at year {self.actual_time//48}:', 'Summary')
+        log.info('Women by age:', 'Summary')
+        log.info(agesm, 'Summary')
+        log.info('Men by age:', 'Summary')
+        log.info(agesf, 'Summary')
+        log.info(f'Number of pending births: {borns}', 'Summary')
+        log.info(f'Number of women pregnants: {preg}', 'Summary')
+        log.info(f'Number of people alive: {alives}', 'Summary')
+        log.info(f'Total deaths: {self.totalDeaths} ----- Total births: {self.totalBirths}', 'Summary')
+
+
+
 def main(args):
     kind = ''
     lamb = 0.0
@@ -233,7 +276,7 @@ def main(args):
         lamb = args.lamb
 
     s = Scope(args.males, args.females, args.period, kind, lamb)
-    s.simulate()
+    s.simulate(args.summary)
     s.summary()
 
 if __name__ == '__main__':
