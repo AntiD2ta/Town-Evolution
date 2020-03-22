@@ -1,6 +1,7 @@
 import utils
+from utils import LoggerFactory as Logger
 
-log = utils.LoggerFactory(name='Simulator')
+log = Logger(name='Simulator')
 
 
 class Person:
@@ -23,96 +24,129 @@ class Person:
 class Scope:
 
     def __init__(self, m, f, period, kind, lamb):
-        self.turns = utils.generateTimes(kind, lamb)
+        self.turns = utils.generateTimes(kind, lamb, period)
         self.top = m + f
         self.people = dict()
         self.newSingles = []
 
         for _ in range(m):
-            p = Person('m', utils.randint(0, 100))
+            p = Person('m', utils.randint(0, 100)*48)
             self.people[len(self.people) + 1] = p
             if p.age >= 12:
                 self.newSingles.append(len(self.people))
 
         for _ in range(f):
-            p = Person('f', utils.randint(0, 100))
+            p = Person('f', utils.randint(0, 100)*48)
             self.people[len(self.people) + 1] = p
             if p.age >= 12:
                 self.newSingles.append(len(self.people))
 
         self.actual_time = 0
         self.period = period
-        self.events = set()
-        self.inmunities = set()
+        self.events = []
         self.couples = []
         self.singlesM = []
         self.singlesF = []
+        self.totalDeaths = 0
+        self.totalBirths = 0
 
     def simulate(self):
         while True:
+            self.deaths = 0
+            self.births = 0
+
+
             #generate deaths events
             for k, p in self.people.items():
-                if not p.inmunity:
+                if p.inmunity <= 0:
                     result, t = utils.generateDeath(p.sex, p.age, self.actual_time)
                     if result:
-                        self.events.add((t, 'death', k))
+                        self.events.append((t, 'death', k))
                     else:
-                        p.inmunity = t
-                        self.inmunities.add(k)
+                        p.inmunity = t * 2
+
 
             #generate breakups
             toRemove = []
             #c = (idx1, idx2)
-            for i, c in enumerate(self.couples):
+            for c in self.couples:
                 if utils.Bernoulli(0.2):
-                    toRemove.append(i)
+                    toRemove.append(c)
                     self.people[c[0]].married = False
                     self.people[c[1]].married = False
-                    self.events.add((utils.generateBreakup(self.people[c[0]].age), 'solitude', c[0]))
-                    self.events.add((utils.generateBreakup(self.people[c[1]].age), 'solitude', c[1]))
+                    self.events.append((utils.generateBreakup(self.people[c[0]].age), 'solitude', c[0]))
+                    self.events.append((utils.generateBreakup(self.people[c[1]].age), 'solitude', c[1]))
             for i in toRemove:
-                self.couples.pop(i)
+                self.couples.remove(i)
             toRemove.clear()
 
+
             #check events
+            n = 0
+            toAdd = []
+            self.events.sort()
             for e in self.events:
-                t, event, personIdx = e
+                t, event, args = e
                 if t <= self.actual_time + self.turns[0]:
+                    n += 1
                     if event == 'death':
                         #death = (time, event_type, person_idx)
-                        self.people[personIdx].alive = False
-                        if self.people[personIdx].married:
-                            for i, c in enumerate(self.couples):
-                                if c[0] == personIdx or c[1] == personIdx:
-                                    toRemove.append(c)
-                                    break
-                            c = self.couples.pop(toRemove.pop())
-                            if c[0] == personIdx:
-                                id = c[1]
-                            else:
-                                id = c[0]
-                            p = self.people[id]
-                            p.married = False
-                            self.events.add((utils.generateBreakup(p.age), 'solitude', id))
+                        personIdx = args
+                        if self.people[personIdx].alive:
+                            self.people[personIdx].alive = False
+                            self.deaths += 1
+                            if self.people[personIdx].married:
+                                for c in self.couples:
+                                    if c[0] == personIdx or c[1] == personIdx:
+                                        toRemove.append(c)
+                                        break
+                                c = toRemove.pop()
+                                self.couples.remove(c)
+                                if c[0] == personIdx:
+                                    id = c[1]
+                                else:
+                                    id = c[0]
+                                p = self.people[id]
+                                p.married = False
+                                toAdd.append((utils.generateBreakup(p.age), 'solitude', id))
                     elif event == 'solitude':
                         #solitude = (time, event_type, person_idx)
-                        pass
+                        personIdx = args
+                        if self.people[personIdx].alive:
+                            self.newSingles.append(personIdx)
                     elif event == 'birth':
                         #birth = (time, event_type, ((father_idx, mother_idx), children_number)
-                        pass
+                        fathers, cn = args
+                        if self.people[fathers[1]].alive:
+                            self.people[fathers[1]].pregnant = False
+                            for c in range(cn):
+                                self.births += 1
+                                if utils.Bernoulli(0.5):
+                                    self.people[len(self.people) + 1] = Person('f', 0)
+                                else:
+                                    self.people[len(self.people) + 1] = Person('m', 0)
+                            self.people[fathers[0]].childrenNumber -= cn
+                            self.people[fathers[1]].childrenNumber -= cn
+                else:
+                    break
+            for i in range(n):
+                self.events.pop(0)
+            for i in toAdd:
+                self.events.append(i)
 
 
             #generate couple wishes
-            for i, id in enumerate(self.newSingles):
-                if utils.generateWishCouple(self.people[id].age):
+            for id in self.newSingles:
+                if self.people[id].age // 48 >= 12 and utils.generateWishCouple(self.people[id].age):
                     toRemove.append(id)
                     if self.people[id].sex == 'm':
                         self.singlesM.append(id)
                     else:
                         self.singlesF.append(id)
             for i in toRemove:
-                self.newSingles.pop(i)
+                self.newSingles.remove(i)
             toRemove.clear()
+
 
             #set couples
             utils.shuffle(self.singlesM)
@@ -124,36 +158,46 @@ class Scope:
                         self.people[m].married = True
                         self.people[w].married = True
                         self.couples.append((m, w))
-                        toRemove += [m, w]
+                        toRemove += [m]
+                        self.singlesF.remove(w)
                         break
-                if len(toRemove):
-                    self.singlesF.remove(toRemove[-1])
             for i in toRemove:
                 self.singlesM.remove(i)
             toRemove.clear()
 
             #generate pregnats
             for c in self.couples:
-                if self.people[c[0]].childrenNumber > 0 and self.people[c[1]].childrenNumber > 0:
+                if not self.people[c[1]].pregnant and self.people[c[0]].childrenNumber > 0 and self.people[c[1]].childrenNumber > 0:
                     while True:
                         cb = utils.generatePregnancy()
-                        if self.people[c[0]].childrenNumber > cb and self.people[c[1]].childrenNumber > cb and utils.generateBirth(self.people[c[1]].age):
-                            self.events.add((self.actual_time + 36, 'birth', (c, cb)))
+                        if self.people[c[0]].childrenNumber >= cb and self.people[c[1]].childrenNumber >= cb:
+                            if utils.generateBirth(self.people[c[1]].age):
+                                self.people[c[1]].pregnant = True
+                                self.events.append((self.actual_time + 36, 'birth', (c, cb)))
                             break
 
             #update date
-            turn = self.turns.pop()
+            turn = self.turns.pop(0)
             if turn >= self.period:
                 break
             for id, p in self.people.items():
                 if p.alive:
                     oldAge = p.age
                     p.age += turn - self.actual_time
+                    if p.age >= 6000: 
+                        #125 years old !!!
+                        self.events.append((turn, 'death', id))
                     if p.age >= 12 * 48 and oldAge < 12 * 48:
                         self.newSingles.append(id)
+                    if p.inmunity <= 0:
+                        p.inmunity -= turn - self.actual_time
             self.actual_time = turn
 
-
+            self.totalBirths += self.births
+            self.totalDeaths += self.deaths
+            
+            #self.summary()
+            log.info(f'Turn passed!, {self.actual_time // 48}, deaths: {self.deaths}, births: {self.births}')
 def main(args):
     pass
 
