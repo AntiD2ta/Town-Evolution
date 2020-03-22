@@ -4,7 +4,8 @@ from colors import *
 import logging
 
 datefmt ='%Y-%m-%d %H:%M:%S'
-format  = f'{BLUE}%(asctime)s{RESET} - %(color)s%(levelname)s{RESET} - {BLACKB}%(name)s{RESET} - {GREEN}%(method)s{RESET} - %(message)s'
+formatC  = f'%(color)s%(levelname)s{RESET} - {BLACKB}%(name)s{RESET} - {GREEN}%(method)s{RESET} - %(message)s'
+formatF  = f'%(asctime)s - %(levelname)s - %(name)s - %(method)s - %(message)s'
 
 breakup = {
     (12, 15): 0.0815,
@@ -79,12 +80,15 @@ childrenBorn = {
 }
 
 
-def LoggerFactory(name="root"):
+def LoggerFactory(name="root", log=False):
     '''
     Create a custom logger to use colors in the logs
     '''
     logging.setLoggerClass(Logger)
-    logging.basicConfig(format=format, datefmt=datefmt)
+    if log:
+        logging.basicConfig(format=formatF, datefmt=datefmt, filename='./logs/log.log', filemode='w')
+    else:
+        logging.basicConfig(format=formatC, datefmt=datefmt)
     return logging.getLogger(name=name)
 
 

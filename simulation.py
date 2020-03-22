@@ -1,7 +1,7 @@
 import utils, time
 from utils import LoggerFactory as Logger
 
-log = Logger(name='Simulator')
+log = None
 
 
 class Person:
@@ -248,7 +248,13 @@ if __name__ == '__main__':
     parser.add_argument('-P', '--poisson', type=str, const='Poisson', nargs='?', help='use a poisson random variable to generate time evolution')
     parser.add_argument('-L', '--lamb', type=float, default=0.0265,help='lambda for poisson if poisson mode is specified')
     parser.add_argument('-v', '--level', type=str, default='INFO', help='log level')
+    parser.add_argument('-s', '--summary', type=bool, const=True, nargs='?', help='set if you want a summary of every turn')
+    parser.add_argument('-F', '--file', type=bool, const=True, nargs='?', help='set if you want log to a file')
 
     args = parser.parse_args()
-    log.setLevel('DEBUG')
+    if args.file:
+        log = Logger(name='Simulation', log=True)
+    else:
+        log = Logger(name='Simulation')
+    log.setLevel(args.level)
     main(args)
