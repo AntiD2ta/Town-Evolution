@@ -1,4 +1,4 @@
-import utils
+import utils, time
 from utils import LoggerFactory as Logger
 
 log = Logger(name='Simulator')
@@ -55,6 +55,7 @@ class Scope:
             self.deaths = 0
             self.births = 0
 
+            evTime = time.perf_counter()
 
             #generate deaths events
             for k, p in self.people.items():
@@ -65,6 +66,9 @@ class Scope:
                     else:
                         p.inmunity = t * 2
 
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of death events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
 
             #generate breakups
             toRemove = []
@@ -80,6 +84,9 @@ class Scope:
                 self.couples.remove(i)
             toRemove.clear()
 
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of breakups events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
 
             #check events
             n = 0
@@ -134,6 +141,9 @@ class Scope:
             for i in toAdd:
                 self.events.append(i)
 
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of check events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
 
             #generate couple wishes
             for id in self.newSingles:
@@ -147,6 +157,9 @@ class Scope:
                 self.newSingles.remove(i)
             toRemove.clear()
 
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of couple wishes events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
 
             #set couples
             utils.shuffle(self.singlesM)
@@ -165,6 +178,10 @@ class Scope:
                 self.singlesM.remove(i)
             toRemove.clear()
 
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of set couples events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
+
             #generate pregnats
             for c in self.couples:
                 if not self.people[c[1]].pregnant and self.people[c[0]].childrenNumber > 0 and self.people[c[1]].childrenNumber > 0:
@@ -175,6 +192,10 @@ class Scope:
                                 self.people[c[1]].pregnant = True
                                 self.events.append((self.actual_time + 36, 'birth', (c, cb)))
                             break
+
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of pregnats events: {evTime}', 'benchmark')
+            evTime = time.perf_counter()
 
             #update date
             turn = self.turns.pop(0)
@@ -192,6 +213,9 @@ class Scope:
                     if p.inmunity <= 0:
                         p.inmunity -= turn - self.actual_time
             self.actual_time = turn
+
+            evTime = time.perf_counter() - evTime
+            log.debug(f'Performance of update date: {evTime}', 'benchmark')
 
             self.totalBirths += self.births
             self.totalDeaths += self.deaths
