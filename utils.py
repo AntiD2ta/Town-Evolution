@@ -125,12 +125,12 @@ def poissonHomogeneous(lamb, t):
             return n, data
 
 
-def generateTimesU(length):
+def generateTimesU(length, top):
     times = [0]
     while True:
         u = randint(0, length)
         times.append(times[-1] + u)
-        if times[-1] >= 4800:
+        if times[-1] >= top:
             return times
         
 
@@ -152,7 +152,7 @@ def generateTimes(kind, *args):
     if kind == "Poisson":
         return generateTimesP(*args)
     elif kind == "Uniform":
-        generateTimesU(*args)
+        return generateTimesU(*args)
 
 def generateChildrenNumber():
     cn = [(p, n) for n, p in childrenNumber.items()]
@@ -166,7 +166,7 @@ def generateChildrenNumber():
 
 def getAgeRange(age, d):
     for l, h in d.keys():
-        if l <= age and age < h:
+        if l <= age//48 and age//48 < h:
             return (l, h)
 
 
