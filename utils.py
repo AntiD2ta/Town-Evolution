@@ -91,13 +91,13 @@ class Logger(logging.getLoggerClass()):
         return super().__init__(name, level)
         
     def debug(self, msg, mth=""):
-        super().debug(msg, extra={"color": self.debug_color, "type": mth})
+        super().debug(msg, extra={"color": self.debug_color, "method": mth})
         
     def info(self, msg, mth=""):
-        super().info(msg, extra={"color": self.info_color, "type": mth})
+        super().info(msg, extra={"color": self.info_color, "method": mth})
         
     def error(self, msg, mth=""):
-        super().error(msg, extra={"color": self.error_color, "type": mth})
+        super().error(msg, extra={"color": self.error_color, "method": mth})
         
     def change_color(self, method, color):
         setattr(self, f"{method}_color", color)
