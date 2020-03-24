@@ -38,8 +38,6 @@ To see a summary of the events occured in every turn, execute the project with t
 
 - **Miguel Tenorio** - [stdevAntiD2ta](https://github.com/stdevAntiD2ta)
 
-También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto.
-
 ## Licencia 📄
 
 This project is under the License (MIT License) - see the file [LICENSE.md](LICENSE.md) for details.
