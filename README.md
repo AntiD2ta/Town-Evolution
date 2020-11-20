@@ -34,10 +34,10 @@ To see a description of all possible params execute `python simulation.py -h`
 
 To see a summary of the events occured in every turn, execute the project with the `-s` flag. This summary includes groups of people by sex and range of ages, number of women pregnat and number of people alive.
 
-## Autores ✒️
+## Author ✒️
 
 - **Miguel Tenorio** - [stdevAntiD2ta](https://github.com/stdevAntiD2ta)
 
-## Licencia 📄
+## License 📄
 
 This project is under the License (MIT License) - see the file [LICENSE.md](LICENSE.md) for details.
