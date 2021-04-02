@@ -36,7 +36,7 @@ To see a summary of the events occured in every turn, execute the project with t
 
 ## Author ✒️
 
-- **Miguel Tenorio** - [stdevAntiD2ta](https://github.com/stdevAntiD2ta)
+- **Miguel Tenorio** - [AntiD2ta](https://github.com/AntiD2ta)
 
 ## License 📄
 
